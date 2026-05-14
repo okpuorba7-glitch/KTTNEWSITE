@@ -6,7 +6,10 @@ export default function Home({ svcs, plans, goTo }: { svcs: Service[]; plans: Pl
   return (<>
     <div className="hero-wrap">
       <div className="hero-inner">
-        <div className="pill"><span style={{ width: 6, height: 6, background: "var(--neon-lime)", borderRadius: "50%" }}></span>NOW SERVING ABUJA</div>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 20 }}>
+          <div className="pill" style={{ marginBottom: 0 }}><span style={{ width: 6, height: 6, background: "var(--neon-lime)", borderRadius: "50%" }}></span>NOW SERVING ABUJA</div>
+          <div className="pill" style={{ marginBottom: 0, background: "rgba(255, 94, 0, 0.1)", border: "1px solid rgba(255, 94, 0, 0.3)", color: "var(--bright-orange)" }}><span style={{ width: 6, height: 6, background: "var(--bright-orange)", borderRadius: "50%" }}></span>COMING TO LAGOS SOON</div>
+        </div>
         <h1 className="headline">Everything Home, <br /><em>One Platform.</em></h1>
         <p className="tagline">Reliable food delivery, professional laundry care, and premium cleaning services in Abuja.</p>
       </div>
