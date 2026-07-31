@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Settings } from "../types";
+import { InstagramIcon, TikTokIcon, FacebookIcon, TwitterIcon } from "../components/SocialIcons";
 
 export default function Contact({ settings }: { settings: Settings }) {
   const [sent,setSent]=useState(false);
@@ -16,7 +17,8 @@ export default function Contact({ settings }: { settings: Settings }) {
       <div>
         <h2 className="fd" style={{fontSize:22,marginBottom:24,color:"#fff"}}>Reach <span style={{color:"var(--neon-lime)"}}>KTT</span></h2>
         {[
-          {icon:"📞",title:"Phone",text:settings.phone},
+          {icon:"📞",title:"Front Desk / Hotline",text:settings.phone},
+          ...(settings.managerPhone ? [{icon:"👔",title:"Manager / Complaints",text:settings.managerPhone}] : []),
           {icon:"📧",title:"Email",text:settings.email},
           {icon:"📍",title:"Address",text:settings.address},
           {icon:"🕐",title:"Hours",text:`Mon – Sat: ${settings.monSat}\nSunday: ${settings.sunday}`},
@@ -27,6 +29,32 @@ export default function Contact({ settings }: { settings: Settings }) {
           </div>
         ))}
         <a href={`https://wa.me/${settings.whatsapp}`} className="wa-btn" target="_blank" rel="noreferrer">💬 Chat on WhatsApp</a>
+
+        <div style={{marginTop: 28, paddingTop: 24, borderTop: "1px solid #2A2A2A"}}>
+          <h4 style={{fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 14}}>Follow Us On Social Media</h4>
+          <div style={{display: "flex", gap: 12, flexWrap: "wrap"}}>
+            {settings.instagram && (
+              <a href={settings.instagram} target="_blank" rel="noreferrer" style={{display: "inline-flex", alignItems: "center", gap: 10, background: "#1A1A1A", border: "1px solid #2A2A2A", color: "#fff", padding: "10px 18px", borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: "none"}}>
+                <InstagramIcon size={22} /> Instagram (@kingstreatabuja)
+              </a>
+            )}
+            {settings.tiktok && (
+              <a href={settings.tiktok} target="_blank" rel="noreferrer" style={{display: "inline-flex", alignItems: "center", gap: 10, background: "#1A1A1A", border: "1px solid #2A2A2A", color: "#fff", padding: "10px 18px", borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: "none"}}>
+                <TikTokIcon size={22} /> TikTok (@kingtreatsabuja)
+              </a>
+            )}
+            {settings.facebook && (
+              <a href={settings.facebook} target="_blank" rel="noreferrer" style={{display: "inline-flex", alignItems: "center", gap: 10, background: "#1A1A1A", border: "1px solid #2A2A2A", color: "#fff", padding: "10px 18px", borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: "none"}}>
+                <FacebookIcon size={22} /> Facebook
+              </a>
+            )}
+            {settings.twitter && (
+              <a href={settings.twitter} target="_blank" rel="noreferrer" style={{display: "inline-flex", alignItems: "center", gap: 10, background: "#1A1A1A", border: "1px solid #2A2A2A", color: "#fff", padding: "10px 18px", borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: "none"}}>
+                <TwitterIcon size={22} /> Twitter / X
+              </a>
+            )}
+          </div>
+        </div>
       </div>
       <div>
         {sent ? (

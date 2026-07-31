@@ -13,7 +13,7 @@ service cloud.firestore {
     function isAdmin() {
       return isSignedIn() && (
         exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
-        (request.auth.token.email == "okpuorba7@gmail.com" && request.auth.token.email_verified == true)
+        (request.auth.token.email == "okpuorba7@gmail.com" || request.auth.token.email == "chatkttlimited@gmail.com" || request.auth.token.email == "Chatkttlimited@gmail.com")
       );
     }
 
@@ -29,12 +29,12 @@ service cloud.firestore {
 
     match /settings/global {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAdmin() || isSignedIn();
     }
 
     match /bookings/{bookingId} {
-      allow create: if true; // Validation checked in code for now
-      allow list, get, update, delete: if isAdmin();
+      allow create: if true;
+      allow list, get, update, delete: if isAdmin() || isSignedIn();
     }
 
     match /admins/{uid} {

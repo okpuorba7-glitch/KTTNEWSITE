@@ -15,6 +15,7 @@ export interface Service {
   iconBg: string;
   title: string;
   sub: string;
+  description?: string;
   tap: string;
   btnLabel: string;
   btnBg: string;
@@ -40,8 +41,18 @@ export interface Plan {
   features: string[];
 }
 
+export interface SubAdmin {
+  id: string;
+  email: string;
+  name: string;
+  role: 'order_manager' | 'service_manager' | 'full_subadmin';
+  permissions: Array<'bookings' | 'services' | 'media' | 'plans' | 'settings'>;
+  addedAt: string;
+}
+
 export interface Settings {
   phone: string;
+  managerPhone?: string;
   email: string;
   whatsapp: string;
   address: string;
@@ -54,6 +65,8 @@ export interface Settings {
   tiktok: string;
   banner: string;
   bannerLink: string;
+  subAdmins?: SubAdmin[];
+  adminPassword?: string;
 }
 
 export interface Booking {

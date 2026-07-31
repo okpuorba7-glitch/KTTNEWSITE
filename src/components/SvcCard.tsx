@@ -10,6 +10,7 @@ export default function SvcCard({ s, onBook }: { s: Service; onBook: () => void;
           <div className="svc-num" style={{color:s.numColor}}>{s.number}</div>
           <div className="svc-title">{s.title}</div>
           <div className="svc-sub">{s.sub}</div>
+          {s.description && <div className="svc-desc" style={{ fontSize: 13, color: "#aaa", marginTop: 8, lineHeight: 1.5 }}>{s.description}</div>}
         </div>
         <div className="svc-icon" style={{background:s.iconBg,borderColor:s.numColor+"44"}}>{s.emoji}</div>
       </div>
@@ -26,7 +27,7 @@ export default function SvcCard({ s, onBook }: { s: Service; onBook: () => void;
       </div>
       {s.media&&s.media.length>0 && (
         <div className="svc-media-row">
-          {s.media.slice(0,4).map((m,i)=>m.type==="video"
+          {s.media.slice(0,5).map((m,i)=>m.type==="video"
             ?<video key={i} src={m.url} className="media-t" muted/>
             :<img key={i} src={m.url} className="media-t" alt=""/>)}
         </div>
