@@ -1,8 +1,8 @@
-import { Service, Plan } from "../types";
+import { Service, Plan, Settings } from "../types";
 import { WHY, TESTIMONIALS, C } from "../constants";
 import SvcCard from "../components/SvcCard";
 
-export default function Home({ svcs, plans, goTo }: { svcs: Service[]; plans: Plan[]; goTo: (p: string) => void }) {
+export default function Home({ svcs, plans, goTo, settings }: { svcs: Service[]; plans: Plan[]; goTo: (p: string) => void; settings?: Settings }) {
   return (<>
     <div className="hero-wrap">
       <div className="hero-inner">
@@ -76,7 +76,7 @@ export default function Home({ svcs, plans, goTo }: { svcs: Service[]; plans: Pl
       <div style={{display:"flex",gap:11,justifyContent:"center",flexWrap:"wrap"}}>
         <button className="btn-orange" style={{fontSize:15,padding:"13px 26px"}} onClick={()=>goTo("booking")}>Book a Service</button>
         <button className="btn-lime" style={{fontSize:15,padding:"13px 26px"}} onClick={()=>goTo("plans")}>View Plans</button>
-        <a href="https://wa.me/2348160880608" className="wa-btn" target="_blank" rel="noreferrer">💬 WhatsApp Us</a>
+        <a href={`https://wa.me/${settings?.whatsapp || "2347066613373"}`} className="wa-btn" target="_blank" rel="noreferrer">💬 WhatsApp Us</a>
       </div>
     </div>
   </>);

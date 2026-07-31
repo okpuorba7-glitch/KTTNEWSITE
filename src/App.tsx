@@ -116,9 +116,19 @@ export default function App() {
           dbService.getSettings()
         ]);
 
-        setServices(svcs.length > 0 ? svcs : DEFAULT_SERVICES);
+        const mergedServices = svcs.length > 0 ? svcs.map(s => {
+          const defaultSvc = DEFAULT_SERVICES.find(d => d.id === s.id);
+          const hasMedia = s.media && s.media.length > 0;
+          return {
+            ...defaultSvc,
+            ...s,
+            media: hasMedia ? s.media : (defaultSvc?.media || [])
+          };
+        }) : DEFAULT_SERVICES;
+
+        setServices(mergedServices);
         setPlans(plns.length > 0 ? plns : DEFAULT_PLANS);
-        if (stgs) setSettings(stgs);
+        if (stgs) setSettings({ ...DEFAULT_SETTINGS, ...stgs });
 
       } catch (error) {
         console.error("Error loading data from Firestore", error);
@@ -293,10 +303,10 @@ export default function App() {
       )}
 
       <main>
-        {page==="home"     && <Home svcs={services} plans={plans} goTo={goTo}/>}
+        {page==="home"     && <Home svcs={services} plans={plans} goTo={goTo} settings={settings}/>}
         {page==="about"    && <About/>}
         {page==="services" && <Services svcs={services} goTo={goTo}/>}
-        {page==="booking"  && <BookingPage pre={pre} />}
+        {page==="booking"  && <BookingPage pre={pre} settings={settings}/>}
         {page==="plans"    && <PlansPage plans={plans} goTo={goTo}/>}
         {page==="contact"  && <Contact settings={settings}/>}
         {page==="admin"    && isAdmin && (

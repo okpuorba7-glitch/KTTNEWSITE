@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { dbService } from "../services/dbService";
+import { Settings } from "../types";
 
-export default function BookingPage({ pre }: { pre?: string }) {
+export default function BookingPage({ pre, settings }: { pre?: string; settings?: Settings }) {
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", service: pre || "", date: "", time: "", address: "", notes: "" });
   
@@ -54,7 +55,7 @@ export default function BookingPage({ pre }: { pre?: string }) {
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 20 }}>
             <a 
-              href={`https://wa.me/2347066613373?text=${whatsappMsg}`} 
+              href={`https://wa.me/${settings?.whatsapp || "2347066613373"}?text=${whatsappMsg}`} 
               target="_blank" 
               rel="noreferrer"
               style={{ background: "#25D366", color: "#000", padding: "12px 24px", borderRadius: 8, fontWeight: 700, textDecoration: "none", fontSize: 14 }}

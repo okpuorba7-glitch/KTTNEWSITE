@@ -495,8 +495,14 @@ export default function AdminDash({
             <div className="settings-card">
               <h3>📱 Social Media Links</h3>
               {(["instagram", "tiktok", "facebook", "twitter"] as const).map((k) => (
-                <div key={k} className="af"><label>{k}</label><input value={settings[k] || ""} onChange={e => updSetting(k, e.target.value)} placeholder={`https://${k}.com/...`} /></div>
+                <div key={k} className="af"><label>{k.charAt(0).toUpperCase() + k.slice(1)} URL</label><input value={settings[k] || ""} onChange={e => updSetting(k, e.target.value)} placeholder={`https://${k}.com/...`} /></div>
               ))}
+            </div>
+            <div className="settings-card">
+              <h3>🕐 Operating Hours</h3>
+              <div className="af"><label>Monday – Saturday</label><input value={settings.monSat || ""} onChange={e => updSetting("monSat", e.target.value)} placeholder="e.g. 7am – 10pm" /></div>
+              <div className="af"><label>Sunday</label><input value={settings.sunday || ""} onChange={e => updSetting("sunday", e.target.value)} placeholder="e.g. 9am – 6pm" /></div>
+              <div className="af"><label>Public Holidays</label><input value={settings.holidays || ""} onChange={e => updSetting("holidays", e.target.value)} placeholder="e.g. 9am – 6pm" /></div>
             </div>
             <div className="settings-card">
               <h3>📢 Announcement Banner</h3>
