@@ -21,7 +21,7 @@ export default function About() {
           {n:"2,500+",l:"Happy Customers",c:"var(--bright-orange)",hl:true},
           {n:"98%",l:"Satisfaction Rate",c:"var(--neon-lime)"},
           {n:"50,000+",l:"Orders Completed",c:"var(--neon-lime)"},
-          {n:"3",l:"Core Services",c:"var(--bright-orange)"}
+          {n:"4",l:"Core Services",c:"var(--bright-orange)"}
         ].map((s,i)=>(
           <div key={i} className={`astat${s.hl?" hl":""}`}><div className="astat-num" style={{color:s.c}}>{s.n}</div><p>{s.l}</p></div>
         ))}

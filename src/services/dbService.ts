@@ -107,6 +107,15 @@ export const dbService = {
     }
   },
 
+  async deletePlan(id: string) {
+    const path = `plans/${id}`;
+    try {
+      await deleteDoc(doc(db, 'plans', id));
+    } catch (e) {
+      handleFirestoreError(e, OperationType.DELETE, path);
+    }
+  },
+
   // Settings
   async getSettings(): Promise<Settings | null> {
     const path = 'settings/global';
@@ -160,6 +169,15 @@ export const dbService = {
       await updateDoc(doc(db, 'bookings', id), { status });
     } catch (e) {
       handleFirestoreError(e, OperationType.UPDATE, path);
+    }
+  },
+
+  async deleteBooking(id: string) {
+    const path = `bookings/${id}`;
+    try {
+      await deleteDoc(doc(db, 'bookings', id));
+    } catch (e) {
+      handleFirestoreError(e, OperationType.DELETE, path);
     }
   },
 

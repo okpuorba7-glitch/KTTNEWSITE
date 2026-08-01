@@ -9,7 +9,7 @@ export const C = {
 export const WHY = [
   {icon:"⚡",title:"Fast & Reliable",desc:"On-time service backed by real accountability — we show up when we say we will."},
   {icon:"🔒",title:"Trusted & Vetted",desc:"Every partner and agent is background-checked and trained to our high standards."},
-  {icon:"📱",title:"One Platform",desc:"Manage food, laundry, and cleaning bookings all in one place."},
+  {icon:"📱",title:"One Platform",desc:"Manage food, bar drinks, laundry, and cleaning bookings all in one place."},
   {icon:"💬",title:"24/7 Support",desc:"Reach us anytime via WhatsApp, phone, or chat."},
   {icon:"✅",title:"Quality Guaranteed",desc:"Not satisfied? We'll make it right — no questions asked."},
   {icon:"💳",title:"Flexible Plans",desc:"One-time or subscribe monthly for recurring convenience and discounts."},

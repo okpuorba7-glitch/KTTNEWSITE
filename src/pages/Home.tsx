@@ -1,8 +1,10 @@
 import { Service, Plan, Settings } from "../types";
-import { WHY, TESTIMONIALS, C } from "../constants";
+import { WHY, TESTIMONIALS } from "../constants";
 import SvcCard from "../components/SvcCard";
+import ReferralBanner from "../components/ReferralBanner";
+import ExpressBadge from "../components/ExpressBadge";
 
-export default function Home({ svcs, plans, goTo, settings }: { svcs: Service[]; plans: Plan[]; goTo: (p: string) => void; settings?: Settings }) {
+export default function Home({ svcs, plans, goTo, settings, onBookWithCode }: { svcs: Service[]; plans: Plan[]; goTo: (p: string, svc?: string) => void; settings?: Settings; onBookWithCode?: (code: string) => void }) {
   return (<>
     <div className="hero-wrap">
       <div className="hero-inner">
@@ -11,13 +13,21 @@ export default function Home({ svcs, plans, goTo, settings }: { svcs: Service[];
           <div className="pill" style={{ marginBottom: 0, background: "rgba(255, 94, 0, 0.1)", border: "1px solid rgba(255, 94, 0, 0.3)", color: "var(--bright-orange)" }}><span style={{ width: 6, height: 6, background: "var(--bright-orange)", borderRadius: "50%" }}></span>COMING TO LAGOS SOON</div>
         </div>
         <h1 className="headline">Everything Home, <br /><em>One Platform.</em></h1>
-        <p className="tagline">Reliable food delivery, professional laundry care, and premium cleaning services in Abuja.</p>
+        <p className="tagline">Reliable food delivery, chilled bar &amp; drinks, professional laundry care, and premium cleaning services in Abuja.</p>
       </div>
     </div>
 
     <div className="tabs">
-      {[{i:"🏠",l:"Home"},{i:"🍽️",l:"Food Delivery"},{i:"👔",l:"Laundry"},{i:"🧹",l:"Cleaning"},{i:"💳",l:"Plans"},{i:"📞",l:"Contact"}].map((t,i)=>(
-        <button key={i} className={`tab${i===0?" active":""}`} onClick={()=>{if(i===1||i===2||i===3)goTo("booking");if(i===4)goTo("plans");if(i===5)goTo("contact");}}>
+      {[
+        {i:"🏠",l:"Home",act:()=>goTo("home")},
+        {i:"🍽️",l:"Food Delivery",act:()=>goTo("booking", "Food Delivery & Restaurant Meals")},
+        {i:"🍾",l:"Bar Menu",act:()=>goTo("booking", "Bar & Drinks Menu")},
+        {i:"👔",l:"Laundry",act:()=>goTo("booking", "Laundry & Dry Cleaning")},
+        {i:"🧹",l:"Cleaning",act:()=>goTo("booking", "Home Cleaning")},
+        {i:"💳",l:"Plans",act:()=>goTo("plans")},
+        {i:"📞",l:"Contact",act:()=>goTo("contact")}
+      ].map((t,i)=>(
+        <button key={i} className={`tab${i===0?" active":""}`} onClick={t.act}>
           {t.i} {t.l}
         </button>
       ))}
@@ -29,15 +39,24 @@ export default function Home({ svcs, plans, goTo, settings }: { svcs: Service[];
           <div key={i} className="stat-item"><span className="stat-num" style={{color:s.c}}>{s.n}</span><span className="stat-label">{s.l}</span></div>
         ))}
       </div>
+      
       <div className="dash-lbl">Select a service &amp; book instantly</div>
       <div className="cards-grid">
         {svcs.map((s,i)=><SvcCard key={i} s={s} onBook={()=>goTo("booking")}/>)}
       </div>
+
+      {/* Referral Perks Banner */}
+      <ReferralBanner settings={settings} onBookWithCode={onBookWithCode || (() => goTo("booking"))} />
     </div></div>
 
     <div className="sec">
       <div className="sec-hdr"><div className="sec-lbl">Why KTT</div><h2 className="fd sec-title">Built for your <span style={{color:"var(--neon-lime)"}}>convenience.</span></h2><p className="sec-sub">Every part of our service is designed to make your everyday life simpler.</p></div>
       <div className="why-grid">{WHY.map((w,i)=><div key={i} className="why-card"><div className="why-ico">{w.icon}</div><div><h4>{w.title}</h4><p>{w.desc}</p></div></div>)}</div>
+    </div>
+
+    {/* Express Emergency Service Banner - Moved right before Pricing */}
+    <div className="sec" style={{ paddingTop: 10, paddingBottom: 10 }}>
+      <ExpressBadge settings={settings} onBookExpress={() => goTo("booking")} />
     </div>
 
     <div className="plans-bg"><div className="plans-inner">

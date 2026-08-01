@@ -67,6 +67,48 @@ export interface Settings {
   bannerLink: string;
   subAdmins?: SubAdmin[];
   adminPassword?: string;
+  // Referral & Reward Perks Settings
+  referralEnabled?: boolean;
+  referralHeadline?: string;
+  referralDescription?: string;
+  referralDiscountAmount?: string;
+  referralMinOrder?: string;
+  referralCodePrefix?: string;
+  // Express Emergency / Same-Day Service Settings
+  expressEnabled?: boolean;
+  expressBadgeTitle?: string;
+  expressBadgeSub?: string;
+  expressFee?: string;
+  expressLaundryTime?: string;
+  expressCleaningTime?: string;
+  // Custom Laundry, Food & Bar Menu Price Lists Managed by Admin
+  customLaundryItems?: LaundryItemSetting[];
+  customFoodItems?: FoodItemSetting[];
+  customBarItems?: BarItemSetting[];
+}
+
+export interface LaundryItemSetting {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  priceDisplay?: string;
+}
+
+export interface FoodItemSetting {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  priceDisplay?: string;
+}
+
+export interface BarItemSetting {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  priceDisplay?: string;
 }
 
 export interface Booking {
@@ -81,4 +123,10 @@ export interface Booking {
   notes: string;
   status: 'new' | 'confirmed' | 'done' | 'cancelled';
   createdAt?: any; // Firestore Timestamp
+  isExpress?: boolean;
+  expressFeeAmount?: number;
+  referralCodeApplied?: string;
+  referralDiscountAmount?: number;
+  totalEstimatedPrice?: number;
+  laundryItemsBreakdown?: string;
 }

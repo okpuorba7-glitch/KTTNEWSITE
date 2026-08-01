@@ -15,6 +15,7 @@ import Services from "./pages/Services";
 import BookingPage from "./pages/Booking";
 import PlansPage from "./pages/Plans";
 import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const PAGES = ["home", "about", "services", "booking", "plans", "contact"];
 const LABELS: Record<string, string> = { home: "Home", about: "About Us", services: "Services", booking: "Book Now", plans: "Plans", contact: "Contact" };
@@ -63,6 +64,20 @@ const DEFAULT_SERVICES: Service[] = [
       { url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop", type: "image", name: "Modern Living Room" },
       { url: "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=600&auto=format&fit=crop", type: "image", name: "Eco Cleaning Kit" }
     ] },
+  { id:"bar", cardClass:"bar", label:"BAR & DRINKS MENU", emoji:"🍾", number:"04",
+    numColor:"#FFBB00", stripe:"linear-gradient(90deg,#FFBB00,#D49B00)",
+    iconBg:"#1F1A00", title:"Chilled Beers, Spirits & Wines", sub:"Cold beers, liquor bottles & fine wine delivered",
+    description:"Chilled beers, stout, whisky, cognac, tequila, rum, and fine wines delivered directly to your doorstep or event in Abuja.",
+    tap:"Tap to order drinks instantly", btnLabel:"Order Drinks Now", btnBg:"#FFBB00", btnColor:"#0A0A0A",
+    featColor:"#FFBB00", barColor:"#FFBB00",
+    basePrice:"1500", deliveryFee:"1000", minOrder:"2000",
+    features:["Chilled beer & stout","Spirits, gin & whisky","Red & white wines","Instant doorstep delivery"],
+    media:[
+      { url: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600&auto=format&fit=crop", type: "image", name: "Fine Wine & Spirits" },
+      { url: "https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=600&auto=format&fit=crop", type: "image", name: "Chilled Beer" },
+      { url: "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=600&auto=format&fit=crop", type: "image", name: "Whiskey Glass" },
+      { url: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=600&auto=format&fit=crop", type: "image", name: "Cocktails & Bottles" }
+    ] },
 ];
 
 const DEFAULT_PLANS: Plan[] = [
@@ -81,7 +96,7 @@ const DEFAULT_SETTINGS: Settings = {
   phone: "07066613373",
   managerPhone: "09047885282",
   email: "Ktt.inquiries@gmail.com",
-  whatsapp: "2347066613373",
+  whatsapp: "2348160880608",
   address: "First gate Apo mechanic Estate, opposite Dubison oil, Abuja, Nigeria",
   monSat: "7am – 10pm",
   sunday: "9am – 6pm",
@@ -92,12 +107,25 @@ const DEFAULT_SETTINGS: Settings = {
   tiktok: "https://www.tiktok.com/@kingtreatsabuja?_r=1&_t=ZS-98TD7eukyWK",
   banner: "",
   bannerLink: "",
+  referralEnabled: true,
+  referralHeadline: "Refer a Neighbor or Friend — Give ₦1,000, Get ₦1,000!",
+  referralDescription: "Word-of-mouth is our pride. Share your referral phone number code with a friend or neighbor in Abuja. On their first booking of ₦5,000 or more, they get ₦1,000 off and YOU earn ₦1,000 reward credit!",
+  referralDiscountAmount: "1000",
+  referralMinOrder: "5000",
+  referralCodePrefix: "REF",
+  expressEnabled: true,
+  expressBadgeTitle: "⚡ Express 24-Hr Delivery & Emergency Same-Day Cleaning",
+  expressBadgeSub: "Need urgent laundry for an event or emergency home cleaning for sudden guests? Request express 24-hr turnaround or same-day dispatch!",
+  expressFee: "5000",
+  expressLaundryTime: "24-Hour Express Turnaround",
+  expressCleaningTime: "Same-Day Emergency Cleaning Dispatch"
 };
 
 export default function App() {
   const [page, setPage] = useState("home");
   const [menu, setMenu] = useState(false);
   const [pre, setPre] = useState("");
+  const [referralCodeToApply, setReferralCodeToApply] = useState("");
   const [services, setServices] = useState<Service[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
@@ -108,6 +136,13 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Parse URL query parameters for referral links (e.g. ?ref=KTT-NEIGHBOR-1000 or ?code=...)
+    const params = new URLSearchParams(window.location.search);
+    const refCode = params.get("ref") || params.get("code") || params.get("promo");
+    if (refCode) {
+      setReferralCodeToApply(refCode);
+    }
+
     async function loadData() {
       try {
         const [svcs, plns, stgs] = await Promise.all([
@@ -124,7 +159,13 @@ export default function App() {
             ...s,
             media: hasMedia ? s.media : (defaultSvc?.media || [])
           };
-        }) : DEFAULT_SERVICES;
+        }) : [...DEFAULT_SERVICES];
+
+        DEFAULT_SERVICES.forEach(defSvc => {
+          if (!mergedServices.some(s => s.id === defSvc.id)) {
+            mergedServices.push(defSvc);
+          }
+        });
 
         setServices(mergedServices);
         setPlans(plns.length > 0 ? plns : DEFAULT_PLANS);
@@ -289,26 +330,103 @@ export default function App() {
         <div className="nav-right">
           <button className="btn-admin" onClick={() => isAdmin ? setPage('admin') : setShowLogin(true)}>🛡️ Admin</button>
           <button className="btn-orange" onClick={()=>goTo("booking")}>Book a Service</button>
-          <button className="hamburger" onClick={()=>setMenu(m=>!m)}><span/><span/><span/></button>
+          <button className="hamburger" aria-label="Toggle navigation menu" onClick={()=>setMenu(m=>!m)}><span/><span/><span/></button>
         </div>
       </nav>
 
+      {/* Top Mobile Sticky Horizontal Service Tabs Bar */}
+      <div 
+        className="tabs sticky-tabs" 
+        style={{
+          position: "fixed", 
+          top: settings.banner ? "102px" : "66px", 
+          left: 0, 
+          right: 0, 
+          zIndex: 990,
+          background: "#111111",
+          borderBottom: "1px solid #2A2A2A",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.5)"
+        }}
+      >
+        {[
+          { i: "🏠", l: "Home", page: "home", act: () => goTo("home") },
+          { i: "🍽️", l: "Food Delivery", page: "booking", act: () => goTo("booking", "Food Delivery & Restaurant Meals") },
+          { i: "🍾", l: "Bar Menu", page: "booking", act: () => goTo("booking", "Bar & Drinks Menu") },
+          { i: "👔", l: "Laundry", page: "booking", act: () => goTo("booking", "Laundry & Dry Cleaning") },
+          { i: "🧹", l: "Cleaning", page: "booking", act: () => goTo("booking", "Home Cleaning") },
+          { i: "💳", l: "Plans", page: "plans", act: () => goTo("plans") },
+          { i: "📞", l: "Contact", page: "contact", act: () => goTo("contact") }
+        ].map((t, idx) => {
+          const isActive = page === t.page && (t.page !== "booking" || !pre || (t.l === "Food Delivery" && pre.includes("Food")) || (t.l === "Bar Menu" && pre.includes("Bar")) || (t.l === "Laundry" && pre.includes("Laundry")) || (t.l === "Cleaning" && pre.includes("Cleaning")));
+          return (
+            <button key={idx} className={`tab${isActive ? " active" : ""}`} onClick={t.act}>
+              <span>{t.i}</span> {t.l}
+            </button>
+          );
+        })}
+      </div>
+
       {menu && (
-        <div style={{position:"fixed",top:66,left:0,right:0,background:"#111111",zIndex:998,borderBottom:"1px solid #2A2A2A"}}>
-          {PAGES.map(p=>(
-            <button key={p} style={{display:"block",width:"100%",textAlign:"left",padding:"13px 5%",background:"none",border:"none",fontSize:15,fontWeight:600,cursor:"pointer",color:page===p?"#39FF14":"#ccc",fontFamily:"'DM Sans',sans-serif",borderBottom:"1px solid #2A2A2A"}} onClick={()=>goTo(p)}>{LABELS[p]}</button>
+        <div style={{position:"fixed",top:settings.banner ? "148px" : "112px",left:0,right:0,background:"#111111",zIndex:998,borderBottom:"2px solid #FF5E00",boxShadow:"0 10px 30px rgba(0,0,0,0.9)",maxHeight:"calc(100vh - 115px)",overflowY:"auto",padding:"10px 0"}}>
+          <div style={{padding:"6px 6% 10px",fontSize:11,fontWeight:800,letterSpacing:2,color:"#FF5E00",textTransform:"uppercase"}}>Mobile Menu &amp; Services</div>
+          {[
+            { i: "🏠", l: "Home", page: "home", act: () => goTo("home") },
+            { i: "🍽️", l: "Food Delivery", page: "booking", act: () => goTo("booking", "Food Delivery & Restaurant Meals") },
+            { i: "🍾", l: "Bar Menu & Drinks", page: "booking", act: () => goTo("booking", "Bar & Drinks Menu") },
+            { i: "👔", l: "Laundry & Dry Cleaning", page: "booking", act: () => goTo("booking", "Laundry & Dry Cleaning") },
+            { i: "🧹", l: "Home Cleaning", page: "booking", act: () => goTo("booking", "Home Cleaning") },
+            { i: "💳", l: "Monthly Subscription Plans", page: "plans", act: () => goTo("plans") },
+            { i: "📞", l: "Contact Us", page: "contact", act: () => goTo("contact") }
+          ].map((item, idx) => (
+            <button
+              key={idx}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                width: "100%",
+                textAlign: "left",
+                padding: "13px 6%",
+                background: "none",
+                border: "none",
+                fontSize: 15,
+                fontWeight: 700,
+                cursor: "pointer",
+                color: page === item.page ? "#39FF14" : "#E4E4E7",
+                fontFamily: "'DM Sans',sans-serif",
+                borderBottom: "1px solid #1C1C1C"
+              }}
+              onClick={item.act}
+            >
+              <span style={{ fontSize: 18 }}>{item.i}</span> {item.l}
+            </button>
           ))}
-          <button style={{display:"block",width:"100%",textAlign:"left",padding:"13px 5%",background:"none",border:"none",fontSize:15,fontWeight:600,cursor:"pointer",color:"#FF5E00",fontFamily:"'DM Sans',sans-serif"}} onClick={() => isAdmin ? setPage('admin') : setShowLogin(true)}>🛡️ Admin Panel</button>
+          <button style={{display:"flex",alignItems:"center",gap:10,width:"100%",textAlign:"left",padding:"14px 6%",background:"rgba(255,94,0,0.15)",border:"none",fontSize:14,fontWeight:800,cursor:"pointer",color:"#FF5E00",fontFamily:"'DM Sans',sans-serif",borderBottom:"1px solid #1C1C1C",marginTop:4}} onClick={()=>goTo("booking")}>
+            <span>⚡</span> Book Any Service Now
+          </button>
+          <button style={{display:"flex",alignItems:"center",gap:10,width:"100%",textAlign:"left",padding:"14px 6%",background:"none",border:"none",fontSize:13,fontWeight:600,cursor:"pointer",color:"#A1A1AA",fontFamily:"'DM Sans',sans-serif"}} onClick={() => isAdmin ? setPage('admin') : setShowLogin(true)}>
+            <span>🛡️</span> Admin Panel Access
+          </button>
+        </div>
+      )}
+
+      {referralCodeToApply && (
+        <div style={{ background: "linear-gradient(90deg, #162416, #0D1A0D)", borderBottom: "1px solid rgba(57,255,20,0.4)", color: "#39FF14", textAlign: "center", padding: "10px 5%", fontSize: 13, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginTop: settings.banner ? "36px" : "0" }}>
+          <span>🎁 Referral perk active! Code <strong>{referralCodeToApply}</strong> will give you ₦{Number(settings.referralDiscountAmount || "1000").toLocaleString()} off your booking.</span>
+          <button onClick={() => goTo("booking")} style={{ background: "#39FF14", color: "#000", border: "none", borderRadius: 6, padding: "4px 12px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>
+            Book &amp; Claim Discount →
+          </button>
         </div>
       )}
 
       <main>
-        {page==="home"     && <Home svcs={services} plans={plans} goTo={goTo} settings={settings}/>}
+        {page==="home"     && <Home svcs={services} plans={plans} goTo={goTo} settings={settings} onBookWithCode={(code) => { setReferralCodeToApply(code); goTo("booking"); }} />}
         {page==="about"    && <About/>}
-        {page==="services" && <Services svcs={services} goTo={goTo}/>}
-        {page==="booking"  && <BookingPage pre={pre} settings={settings}/>}
+        {page==="services" && <Services svcs={services} goTo={goTo} settings={settings}/>}
+        {page==="booking"  && <BookingPage pre={pre} settings={settings} initialCode={referralCodeToApply}/>}
         {page==="plans"    && <PlansPage plans={plans} goTo={goTo}/>}
         {page==="contact"  && <Contact settings={settings}/>}
+        {page==="privacy"  && <PrivacyPolicy settings={settings}/>}
         {page==="admin"    && isAdmin && (
           <AdminDash 
             svcs={services} 
@@ -362,10 +480,12 @@ export default function App() {
             <li onClick={()=>goTo("plans")}>Pricing Plans</li>
             <li onClick={()=>goTo("booking")}>Book a Service</li>
             <li onClick={()=>goTo("contact")}>Contact</li>
+            <li onClick={()=>goTo("privacy")}>Privacy Policy</li>
           </ul></div>
           <div className="footer-col"><h4>Contact</h4><ul>
             <li><strong>Hotline:</strong> {settings.phone}</li>
             {settings.managerPhone && <li><strong>Manager:</strong> {settings.managerPhone}</li>}
+            <li><strong>WhatsApp Only:</strong> +234 816 088 0608</li>
             <li style={{wordBreak:"break-all"}}>{settings.email}</li>
             <li>{settings.address}</li>
             <li style={{color:"#39FF14"}}>Mon–Sat: {settings.monSat}</li>
@@ -374,11 +494,14 @@ export default function App() {
         <hr className="footer-div"/>
         <div className="footer-btm">
           <p>© 2025 Kings Treat Tech Limited. All rights reserved.</p>
-          <div className="footer-links"><span>Privacy Policy</span><span>Terms of Service</span></div>
+          <div className="footer-links">
+            <span style={{ cursor: "pointer", color: page === "privacy" ? "#39FF14" : undefined }} onClick={() => goTo("privacy")}>Privacy Policy</span>
+            <span style={{ cursor: "pointer" }} onClick={() => goTo("privacy")}>Terms of Service</span>
+          </div>
         </div>
       </div></footer>
 
-      <a href={`https://wa.me/${settings.whatsapp}`} className="wa-float" target="_blank" rel="noreferrer">💬</a>
+      <a href={`https://wa.me/${(settings.whatsapp || "2348160880608").replace(/[^0-9]/g, "")}`} className="wa-float" target="_blank" rel="noreferrer" title="Chat on WhatsApp (+234 816 088 0608)">💬</a>
     </>
   );
 }
